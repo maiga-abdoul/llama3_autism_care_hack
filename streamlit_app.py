@@ -68,7 +68,7 @@ def get_translated_texts(language):
         'title': 'Autism Counseling Assistant',
         'settings': 'Settings',
         'choose_language': 'Choose Language',
-        'enter_api': 'enter you openai api key',
+        'enter_api': 'Enter you openai api key',
         'processing': 'Processing...',
         'upload_pdf': 'Upload a PDF',
         'spinning': 'Processing...',
@@ -98,12 +98,6 @@ def get_translated_texts(language):
 
     return texts[st.session_state.language]
 
-# Language selection
-language = st.sidebar.selectbox("Choose Language", ("english", "swahili"))
-if language == 'swahili':
-    st.session_state.language = 'swahili'
-else:
-    st.session_state.language = 'english'
 
 # Get translated texts based on the selected language
 texts = get_translated_texts(st.session_state.language)
@@ -140,10 +134,10 @@ st.title(texts['title'])
 
 # Bordered box container
 with st.sidebar.container():
-    st.sidebar.markdown('<div class="boxed">', unsafe_allow_html=True)
-
+    st.sidebar.markdown('<div class="boxed" style="color: white;">', unsafe_allow_html=True)
+    st.markdown(f"<span style='color:white'>{texts['enter_api']}</span>", unsafe_allow_html=True)
     # Input field for the API key
-    api_key = st.sidebar.text_input(texts['enter_api'], type="password")
+    api_key = st.sidebar.text_input(label="", type="password")
     
     # Submission button
     if st.sidebar.button(texts['submit']):
@@ -153,16 +147,9 @@ with st.sidebar.container():
 
 # Load the API key from the session
 # api_key = load_api_key()
-print('get api', api_key)
+# print('get api', api_key)
 
-# PDF upload
-uploaded_file = st.sidebar.file_uploader(texts['upload_pdf'], type=["pdf"])
-
-# verify if a file have been uploaded. If not, we use a default file
-if uploaded_file == None:
-    uploaded_file = 'autism_caregiving_data.pdf'
-else:
-    uploaded_file = uploaded_file.name
+uploaded_file = 'autism_caregiving_data.pdf'
 
 # Main page ###################################################################################################
 # Display chat messages from history on app rerun
@@ -177,25 +164,25 @@ if 'api_key' in st.session_state:
         st.chat_message("user").markdown(prompt)
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
-        try:
-            # querry 
-            with st.spinner(texts['spinning']):
-                if st.session_state.language !='english':
-                    prompt = translate_prompt(prompt, 'swahili')
+        print(f"st.session_state['api_key']: {st.session_state['api_key']}")
+        # try:
+        # querry
+        with st.spinner(texts['spinning']):
 
-                response = st.session_state.chat.process_query(
-                    api_key=st.session_state['api_key'],
-                    query=prompt,
-                    pdf_file=uploaded_file,
-                    language=language
-                ) 
-            
-            # Display assistant response in chat message container
-            with st.chat_message("assistant"):
-                st.markdown(response, unsafe_allow_html=True)
-            # Add assistant response to chat history
-            st.session_state.messages.append({"role": "assistant", "content": response})
-        except:
-            st.error(texts['verify_api_message'])
+            response = st.session_state.chat.process_query(
+                api_key=st.session_state['api_key'],
+                query=prompt,
+                pdf_file=uploaded_file,
+                language="english"
+            )
+
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):
+            st.markdown(response, unsafe_allow_html=True)
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
+        # except BaseException as e:
+        #     print(str(e))
+        #     st.error(texts['verify_api_message'])
 else:
     st.error(texts['api_key_error'])
