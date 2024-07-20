@@ -4,11 +4,14 @@ import rag_handler
 import os
 from deep_translator import GoogleTranslator
 
-
 # Define a function to load the API key from the session
+from autism_tests import MChat
+
+
 @st.cache_data(show_spinner=False)
 def load_api_key():
     return st.session_state['api_key']
+
 
 # Set the background colors
 page_bg_color = """
@@ -26,13 +29,14 @@ header {visibility: hidden;}
 # Render the CSS styles
 st.markdown(page_bg_color, unsafe_allow_html=True)
 
+
 @st.cache_resource
 def initialize():
-    chat= rag_handler
+    chat = rag_handler
     return chat
 
-st.session_state.chat=initialize()
 
+st.session_state.chat = initialize()
 
 # Set up session state for language
 if 'language' not in st.session_state:
@@ -43,61 +47,82 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
-
 # translation function
 def translate_text(text, language):
-    
     if st.session_state.language == "swahili":
         translator = GoogleTranslator(source="english", target="swahili")
         return translator.translate(text)
     return text
 
+
 # translation function
 def translate_prompt(text, language):
-    
     if language == "swahili":
         translator = translator = GoogleTranslator(source="swahili", target="english")
         # print("translated",translator.translate(text))
         return translator.translate(text)
     return text
 
+
 # Function to translate all text in the app
 def get_translated_texts(language):
     texts = {
-    'english': {
-        'title': 'Autism Counseling Assistant',
-        'settings': 'Settings',
-        'choose_language': 'Choose Language',
-        'enter_api': 'Enter you openai api key',
-        'processing': 'Processing...',
-        'upload_pdf': 'Upload a PDF',
-        'spinning': 'Processing...',
-        'input_message': 'Enter your query here...',
-        'submit':'submit',
-        'api_key_error': 'Please enter your OpenAI API key in the sidebar.',
-        'verify_api_message': 'Please verify that your OpenAI API key in the sidebar is correct.',
-        'api_success': 'API key submitted successfully!',
-        'chatbot': 'AUTI-CARE smart chatbot'
-    },
-    'swahili': {
-        'title': 'Msaidizi wa Ushauri wa Autism',
-        'settings': 'Mipangilio',
-        'choose_language': 'Chagua Lugha',
-        'enter_api': 'ingiza ufunguo wa openai api',
-        'processing': 'Inasindika...',
-        'upload_pdf': 'Pakia PDF',
-        'spinning': 'Inasindika...',
-        'input_message': 'Ingiza swali lako hapa...',
-        'submit':'wasilisha',
-        'api_key_error': 'Tafadhali ingiza kitufe chako cha OpenAI API kwenye upau wa kando.',
-        'verify_api_message': 'Tafadhali thibitisha kuwa ufunguo wako wa OpenAI API katika utepe ni sahihi.',
-        'api_success': 'Ufunguo wa API umewasilishwa!',
-        'chatbot': 'AUTI-CARE chatbot mahiri'
-    }
+        'english': {
+            'title': 'Autism Counseling Assistant',
+            'settings': 'Settings',
+            'choose_language': 'Choose Language',
+            'enter_api': 'Enter you openai api key',
+            'processing': 'Processing...',
+            'upload_pdf': 'Upload a PDF',
+            'spinning': 'Processing...',
+            'input_message': 'Enter your query here...',
+            'submit': 'submit',
+            'api_key_error': 'Please enter your OpenAI API key in the sidebar.',
+            'verify_api_message': 'Please verify that your OpenAI API key in the sidebar is correct.',
+            'api_success': 'API key submitted successfully!',
+            'chatbot': 'AUTI-CARE smart chatbot'
+        },
+        'swahili': {
+            'title': 'Msaidizi wa Ushauri wa Autism',
+            'settings': 'Mipangilio',
+            'choose_language': 'Chagua Lugha',
+            'enter_api': 'ingiza ufunguo wa openai api',
+            'processing': 'Inasindika...',
+            'upload_pdf': 'Pakia PDF',
+            'spinning': 'Inasindika...',
+            'input_message': 'Ingiza swali lako hapa...',
+            'submit': 'wasilisha',
+            'api_key_error': 'Tafadhali ingiza kitufe chako cha OpenAI API kwenye upau wa kando.',
+            'verify_api_message': 'Tafadhali thibitisha kuwa ufunguo wako wa OpenAI API katika utepe ni sahihi.',
+            'api_success': 'Ufunguo wa API umewasilishwa!',
+            'chatbot': 'AUTI-CARE chatbot mahiri'
         }
+    }
 
     return texts[st.session_state.language]
 
+
+prompt_template = """
+    You are an AI assistant helping parents of children with autism. Your task is to determine if a user's query indicates they want to test their child for signs of autism. Respond with only "yes" or "no".
+    Guidelines:
+
+    Respond "yes" if the query:
+
+    Mentions testing, screening, or evaluating for autism
+    Asks about autism signs they want to evaluate, symptoms, or early indicators
+    Expresses concern about their child's development in areas related to autism (e.g., social skills, communication, repetitive behaviors)
+
+
+    Respond "no" for:
+
+    General questions about autism
+    Queries about managing autism or supporting an autistic child
+    Any other topic not directly related to identifying autism in a child
+
+
+
+    Remember: Only respond with "yes" or "no". Do not provide any other information or explanation.
+    """
 
 # Get translated texts based on the selected language
 texts = get_translated_texts(st.session_state.language)
@@ -114,31 +139,30 @@ def handle_submit(api_key):
     else:
         st.sidebar.error("Please enter a valid API key.")
 
+
 # Load the image file
 image_file = 'autiCare.png'
 
-col1, col2,_ = st.columns([1, 2, 1])  # Create three columns with different widths
+col1, col2, _ = st.columns([1, 2, 1])  # Create three columns with different widths
 
 with col2:
-  # Define the caption color (replace with "orange" for orange caption)
-  caption_color = "orange"
-  
-  # Display the image separately
-  st.image(image_file, width=220)
-  # Display the caption with HTML formatting using markdown
-  st.markdown(f"<span style='color:{caption_color}'>{texts['chatbot']}</span>", unsafe_allow_html=True)
+    # Define the caption color (replace with "orange" for orange caption)
+    caption_color = "orange"
 
+    # Display the image separately
+    st.image(image_file, width=220)
+    # Display the caption with HTML formatting using markdown
+    st.markdown(f"<span style='color:{caption_color}'>{texts['chatbot']}</span>", unsafe_allow_html=True)
 
 st.title(texts['title'])
-
 
 # Bordered box container
 with st.sidebar.container():
     st.sidebar.markdown('<div class="boxed" style="color: white;">', unsafe_allow_html=True)
     st.markdown(f"<span style='color:white'>{texts['enter_api']}</span>", unsafe_allow_html=True)
     # Input field for the API key
-    api_key = st.sidebar.text_input(label="", type="password")
-    
+    api_key = st.sidebar.text_input(label="Api key", type="password", label_visibility="hidden")
+
     # Submission button
     if st.sidebar.button(texts['submit']):
         handle_submit(api_key)
@@ -156,8 +180,15 @@ uploaded_file = 'autism_caregiving_data.pdf'
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        
+
+from autism_tests import AutismTest
+
+
+# autism_test.display_test()
+
 if 'api_key' in st.session_state:
+    open_ai_model = rag_handler.OpenAiModel(model="gpt-3.5-turbo", api_key=st.session_state['api_key'])
+    autism_test = AutismTest(name="M-Chat")
     # React to user input
     if prompt := st.chat_input(texts['input_message']):
         # Display user message in chat message container
@@ -167,14 +198,27 @@ if 'api_key' in st.session_state:
         print(f"st.session_state['api_key']: {st.session_state['api_key']}")
         # try:
         # querry
-        with st.spinner(texts['spinning']):
+        response = None
 
-            response = st.session_state.chat.process_query(
-                api_key=st.session_state['api_key'],
-                query=prompt,
-                pdf_file=uploaded_file,
-                language="english"
-            )
+        with st.spinner(texts['spinning']):
+            open_ai_model.prompt = prompt_template
+            open_ai_model.user_content = prompt
+            decision_to_display_test = open_ai_model.get_message()
+            print(
+                f"BEFORE: st.session_state.get('decision_to_display_test', False): {st.session_state.get('decision_to_display_test', False)}")
+            if decision_to_display_test.lower() == "yes" or st.session_state.get("decision_to_display_test", False):
+                st.session_state["decision_to_display_test"] = True
+                # autism_test.display_test()
+            else:
+                st.session_state["decision_to_display_test"] = False
+                response = st.session_state.chat.process_query(
+                    api_key=st.session_state['api_key'],
+                    query=prompt,
+                    pdf_file=uploaded_file,
+                    language="english"
+                )
+
+            print(f"AFTER: st.session_state.get('decision_to_display_test', False): {st.session_state.get('decision_to_display_test', False)}")
 
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
@@ -184,5 +228,7 @@ if 'api_key' in st.session_state:
         # except BaseException as e:
         #     print(str(e))
         #     st.error(texts['verify_api_message'])
+        if st.session_state.get("decision_to_display_test", False):
+            autism_test.display_test()
 else:
     st.error(texts['api_key_error'])
