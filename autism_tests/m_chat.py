@@ -5,7 +5,7 @@ from autism_tests.austim_test_base import AutismTestBase
 
 class MChat(AutismTestBase):
     with open(os.path.join("files", "autism_test", "mchat_questions_list.json"), "r") as f:
-        _questions = json.loads(f.read())
+        _questions = json.loads(f.read())[0:5]  # TODO: [0:5] must be removed
 
     _name = "M-Chat"
     _description = """"

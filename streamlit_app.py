@@ -80,7 +80,7 @@ def get_translated_texts(language):
             'api_key_error': 'Please enter your OpenAI API key in the sidebar.',
             'verify_api_message': 'Please verify that your OpenAI API key in the sidebar is correct.',
             'api_success': 'API key submitted successfully!',
-            'chatbot': 'AUTI-CARE smart chatbot'
+            'chatbot': 'AUTISM-CARE smart chatbot'
         },
         'swahili': {
             'title': 'Msaidizi wa Ushauri wa Autism',

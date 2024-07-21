@@ -8,6 +8,8 @@ from langchain_community.vectorstores import DocArrayInMemorySearch
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.document_loaders import PyPDFLoader
 from openai import OpenAI
+import os
+from together import Together
 
 translator = GoogleTranslator(source='en', target='swahili')
 
