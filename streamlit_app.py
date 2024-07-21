@@ -186,12 +186,11 @@ for message in st.session_state.messages:
 
 # st.session_state["autism_test"].display_test()
 
+if "autism_test" not in st.session_state:
+    st.session_state["autism_test"] = AutismTest(name="M-Chat")
 
 if 'api_key' in st.session_state:
     open_ai_model = rag_handler.OpenAiModel(model="gpt-3.5-turbo", api_key=st.session_state['api_key'])
-
-    if "autism_test" not in st.session_state:
-        st.session_state["autism_test"] = AutismTest(name="M-Chat")
 
     # React to user input
     if prompt := st.chat_input(texts['input_message']):
