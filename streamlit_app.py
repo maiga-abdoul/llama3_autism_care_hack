@@ -77,8 +77,8 @@ def get_translated_texts(language):
             'spinning': 'Processing...',
             'input_message': 'Enter your query here...',
             'submit': 'submit',
-            'api_key_error': 'Please enter your OpenAI API key in the sidebar.',
-            'verify_api_message': 'Please verify that your OpenAI API key in the sidebar is correct.',
+            'api_key_error': 'Please enter your OpenAI and Together API key in the sidebar.',
+            'verify_api_message': 'Please verify that your OpenAI and Together API key in the sidebar is correct.',
             'api_success': 'API key submitted successfully!',
             'chatbot': 'AUTISM-CARE smart chatbot'
         },
@@ -130,7 +130,7 @@ texts = get_translated_texts(st.session_state.language)
 
 # Function to handle the API key submission
 # @st.cache_data(show_spinner=False)
-def handle_submit(api_key):
+def handle_submit(api_key, together_api_key):
     if api_key:
         st.session_state['api_key'] = api_key
         # print(st.session_state['api_key'])
@@ -138,6 +138,13 @@ def handle_submit(api_key):
         # st.sidebar.write(f"API Key: {api_key}")  # Optionally display the API key
     else:
         st.sidebar.error("Please enter a valid API key.")
+    if together_api_key:
+        st.session_state['together_api_key'] = together_api_key
+        # print(st.session_state['api_key'])
+        st.sidebar.success(texts['api_success'])
+        # st.sidebar.write(f"API Key: {api_key}")  # Optionally display the API key
+    else:
+        st.sidebar.error("Please enter a valid Together API key.")
 
 
 # Load the image file
@@ -159,13 +166,16 @@ st.title(texts['title'])
 # Bordered box container
 with st.sidebar.container():
     st.sidebar.markdown('<div class="boxed" style="color: white;">', unsafe_allow_html=True)
-    st.markdown(f"<span style='color:white'>{texts['enter_api']}</span>", unsafe_allow_html=True)
+    st.markdown(f"<span style='color:white'>Enter your API Keys</span>", unsafe_allow_html=True)
     # Input field for the API key
-    api_key = st.sidebar.text_input(label="Api key", type="password", label_visibility="hidden")
+    together_api_key = st.sidebar.text_input(label="TogetherAI Api key", type="password", label_visibility="hidden", placeholder="Together api key")
+
+    # Input field for the API key
+    api_key = st.sidebar.text_input(label="OpneAI Api key", type="password", label_visibility="hidden", placeholder=texts['enter_api'])
 
     # Submission button
     if st.sidebar.button(texts['submit'] or True):
-        handle_submit(api_key)
+        handle_submit(api_key, together_api_key)
 
     st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
@@ -189,8 +199,8 @@ for message in st.session_state.messages:
 if "autism_test" not in st.session_state:
     st.session_state["autism_test"] = AutismTest(name="M-Chat")
 
-if 'api_key' in st.session_state:
-    open_ai_model = rag_handler.OpenAiModel(model="gpt-3.5-turbo", api_key=st.session_state['api_key'])
+if 'api_key' in st.session_state:  # meta-llama/Llama-3-8b-chat-hf
+    open_ai_model = rag_handler.OpenAiModel(model="meta-llama/Meta-Llama-3-70B-Instruct-Turbo", api_key=st.session_state['together_api_key'])
 
     # React to user input
     if prompt := st.chat_input(texts['input_message']):

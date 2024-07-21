@@ -1,8 +1,4 @@
-README.md
-
-# Langflow-Hack 
-Build with Llamma3: Llama3 Hack 
-
+# Build with Llamma3: Llama3 Hack 
 
 Welcome to the `Autism Care` digital platform repository. It contains the implementation of `Autism Care`, designed to help parents or cargivers to enhance their communication skills with autistic children and also to assess the autism status of their children.
 
@@ -10,8 +6,8 @@ Welcome to the `Autism Care` digital platform repository. It contains the implem
 
 ## Features
 
-* Exange with a RAG chatbot: the user can ask any question related to autism to get some answer or be redirected to a pretesting formular
-* Answer to a questionar to test the child autism status. 
+* Exchange with a RAG chatbot: the user can ask any question related to autism to get some answer or be redirected to a pretesting formular
+* Answer to a questioner to test the child autism status. 
 
 ## Technologies Used
 
@@ -25,6 +21,7 @@ Welcome to the `Autism Care` digital platform repository. It contains the implem
 
 * Python 3.8 or higher
 * Llama3 from together.ai API key 
+* OpenAI API key 
 
 
 ### Installation

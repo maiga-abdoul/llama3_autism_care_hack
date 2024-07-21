@@ -8,7 +8,6 @@ from langchain_community.vectorstores import DocArrayInMemorySearch
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.document_loaders import PyPDFLoader
 from openai import OpenAI
-import os
 from together import Together
 
 translator = GoogleTranslator(source='en', target='swahili')
@@ -140,13 +139,69 @@ def query_should_we_display_test(api_key: str = '', query: str = ''):
     return response
 
 
+# class OpenAiModel:
+#     def __init__(self, model: str = "", prompt: str = "", user_content: str = "", image_size: str = "1024x1024",
+#                  quality: str = "standard", num_images: int = 1, api_key: str = ''):
+#         """
+#         param: image_size: ['256x256', '512x512', '1024x1024', '1024x1792', '1792x1024']
+#         """
+#         self.client = OpenAI(api_key=api_key)
+#         self.model = model
+#         self.prompt = prompt
+#         self.user_content = user_content
+#         self.image_size = image_size
+#         self.quality = quality
+#         self.num_images = num_images
+#
+#     def get_message(self):
+#
+#         if self.prompt == "" or self.user_content == "":
+#             print(f"Error: Please provide `prompt` and `user_content`")
+#             return None
+#
+#         if "dall" in self.model:
+#             print(f"Error: {self.model} is only image generation not text generation.")
+#             return None
+#
+#         completion = self.client.chat.completions.create(
+#             model=self.model,
+#             messages=[
+#                 {"role": "system", "content": self.prompt},
+#                 {"role": "user", "content": self.user_content}
+#             ]
+#         )
+#         print(f"completion.choices[0].message: {completion.choices[0].message.content}")
+#         return completion.choices[0].message.content
+#
+#     def get_images_urls(self):
+#         if self.prompt == "" and self.user_content == "":
+#             print("Error: Please provide `prompt` and/or `user_content`")
+#             return None
+#
+#         if "dall" not in self.model:
+#             print(f"Error: {self.model} is only text generation not image generation.")
+#             return None
+#
+#         print(f"get_images_urls-model: {self.model}")
+#         print(f"guser_content: {self.user_content}")
+#         response = self.client.images.generate(
+#             model=self.model,  # "dall-e-3",
+#             prompt=self.user_content,
+#             size=self.image_size,
+#             quality=self.quality,
+#             n=self.num_images,
+#         )
+#
+#         return response
+
+
 class OpenAiModel:
     def __init__(self, model: str = "", prompt: str = "", user_content: str = "", image_size: str = "1024x1024",
                  quality: str = "standard", num_images: int = 1, api_key: str = ''):
         """
         param: image_size: ['256x256', '512x512', '1024x1024', '1024x1792', '1792x1024']
         """
-        self.client = OpenAI(api_key=api_key)
+        self.client = Together(api_key=api_key)
         self.model = model
         self.prompt = prompt
         self.user_content = user_content
